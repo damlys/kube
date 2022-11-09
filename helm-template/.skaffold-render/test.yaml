@@ -1,0 +1,158 @@
+---
+# Source: kuard/templates/configs.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: "kuard-test-config-envs"
+  namespace: "playground-helm"
+data:
+  SECRET_A: "dGVzdCBTRUNSRVRfQQ=="
+  SECRET_B: "dGVzdCBTRUNSRVRfQg=="
+---
+# Source: kuard/templates/configs.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: "kuard-test-config-files"
+  namespace: "playground-helm"
+data:
+  secret.json: "ewogICJkYXRhIjogInRlc3Qgc2VjcmV0Lmpzb24iCn0K"
+---
+# Source: kuard/templates/configs.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "kuard-test-config-envs"
+  namespace: "playground-helm"
+data:
+  CONFIG_A: "test CONFIG_A"
+  CONFIG_B: "test CONFIG_B"
+---
+# Source: kuard/templates/configs.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "kuard-test-config-files"
+  namespace: "playground-helm"
+data:
+  config.json: "{\n  \"data\": \"test config.json\"\n}\n"
+---
+# Source: kuard/templates/http-server.svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: "kuard-test-http-server"
+  namespace: "playground-helm"
+  labels:
+    app.kubernetes.io/component: http-server
+    app.kubernetes.io/name: kuard
+    app.helm.sh/release: "kuard-test"
+    app.helm.sh/chart: "kuard-0.0.0"
+    app.skaffold.dev/artifact: "gcr_io_kuar_demo_kuard_amd64"
+    app.skaffold.dev/tag: "v0_9_green"
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/component: http-server
+    app.kubernetes.io/name: kuard
+    app.helm.sh/release: "kuard-test"
+  ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: http
+---
+# Source: kuard/templates/http-server.deploy.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "kuard-test-http-server"
+  namespace: "playground-helm"
+  labels:
+    app.kubernetes.io/component: http-server
+    app.kubernetes.io/name: kuard
+    app.helm.sh/release: "kuard-test"
+    app.helm.sh/chart: "kuard-0.0.0"
+    app.skaffold.dev/artifact: "gcr_io_kuar_demo_kuard_amd64"
+    app.skaffold.dev/tag: "v0_9_green"
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: http-server
+      app.kubernetes.io/name: kuard
+      app.helm.sh/release: "kuard-test"
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: http-server
+        app.kubernetes.io/name: kuard
+        app.helm.sh/release: "kuard-test"
+        app.helm.sh/chart: "kuard-0.0.0"
+        app.skaffold.dev/artifact: "gcr_io_kuar_demo_kuard_amd64"
+        app.skaffold.dev/tag: "v0_9_green"
+      annotations:
+        checksum/configs: "2e459c0f915b82024346c83daf4840eb8aa18ff1d56803d891cddd7d2d40b677"
+    spec:
+      containers:
+        - name: http-server
+          image: "gcr.io/kuar-demo/kuard-amd64:v0.9-green"
+          envFrom:
+            - configMapRef:
+                name: "kuard-test-config-envs"
+            - secretRef:
+                name: "kuard-test-config-envs"
+          volumeMounts:
+            - name: config-files
+              mountPath: /run/secrets/kuard
+              readOnly: true
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              port: http
+              path: /ready
+          livenessProbe:
+            httpGet:
+              port: http
+              path: /healthy
+          resources:
+            requests:
+              cpu: 1m
+              memory: 1M
+            limits:
+              cpu: 250m
+              memory: 256M
+      volumes:
+        - name: config-files
+          projected:
+            sources:
+              - configMap:
+                  name: "kuard-test-config-files"
+              - secret:
+                  name: "kuard-test-config-files"
+---
+# Source: kuard/templates/http-server.hpa.yaml
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: "kuard-test-http-server"
+  namespace: "playground-helm"
+  labels:
+    app.kubernetes.io/component: http-server
+    app.kubernetes.io/name: kuard
+    app.helm.sh/release: "kuard-test"
+    app.helm.sh/chart: "kuard-0.0.0"
+    app.skaffold.dev/artifact: "gcr_io_kuar_demo_kuard_amd64"
+    app.skaffold.dev/tag: "v0_9_green"
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: "kuard-test-http-server"
+  minReplicas: 1
+  maxReplicas: 1

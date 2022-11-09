@@ -1,0 +1,130 @@
+apiVersion: v1
+data:
+  CONFIG_A: test CONFIG_A
+  CONFIG_B: test CONFIG_B
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/name: kuard
+  name: kuard-config-envs-test-dktgftftm7
+  namespace: playground-kustomize
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/name: kuard
+  name: kuard-config-files-test-6ct58987ht
+  namespace: playground-kustomize
+---
+apiVersion: v1
+data:
+  SECRET_A: dGVzdCBTRUNSRVRfQQ==
+  SECRET_B: dGVzdCBTRUNSRVRfQg==
+kind: Secret
+metadata:
+  labels:
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/name: kuard
+  name: kuard-config-envs-test-m6c4h7dmbf
+  namespace: playground-kustomize
+type: Opaque
+---
+apiVersion: v1
+data: {}
+kind: Secret
+metadata:
+  labels:
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/name: kuard
+  name: kuard-config-files-test-46f8b28mk5
+  namespace: playground-kustomize
+type: Opaque
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/component: http-server
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/name: kuard
+  name: kuard-http-server-test
+  namespace: playground-kustomize
+spec:
+  ports:
+  - name: http
+    port: 8080
+    protocol: TCP
+    targetPort: http
+  selector:
+    app.kubernetes.io/component: http-server
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/name: kuard
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/component: http-server
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/name: kuard
+  name: kuard-http-server-test
+  namespace: playground-kustomize
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: http-server
+      app.kubernetes.io/instance: test
+      app.kubernetes.io/name: kuard
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: http-server
+        app.kubernetes.io/instance: test
+        app.kubernetes.io/name: kuard
+    spec:
+      containers:
+      - envFrom:
+        - configMapRef:
+            name: kuard-config-envs-test-dktgftftm7
+        - secretRef:
+            name: kuard-config-envs-test-m6c4h7dmbf
+        image: gcr.io/kuar-demo/kuard-amd64:v0.9-green
+        livenessProbe:
+          httpGet:
+            path: /healthy
+            port: http
+        name: http-server
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: http
+        resources:
+          limits:
+            cpu: 250m
+            memory: 256M
+          requests:
+            cpu: 1m
+            memory: 1M
+        volumeMounts:
+        - mountPath: /run/secrets/kuard
+          name: config-files
+          readOnly: true
+      volumes:
+      - name: config-files
+        projected:
+          sources:
+          - configMap:
+              name: kuard-config-files-test-6ct58987ht
+          - secret:
+              name: kuard-config-files-test-46f8b28mk5

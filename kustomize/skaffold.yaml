@@ -1,0 +1,26 @@
+apiVersion: skaffold/v3alpha1
+kind: Config
+profiles:
+  - name: test
+    manifests:
+      kustomize:
+        paths:
+          - kuard/overlays/test
+    deploy:
+      kubeContext: docker-desktop
+      kubectl:
+        flags:
+          global:
+            - --namespace=playground-kustomize
+
+  - name: prod
+    manifests:
+      kustomize:
+        paths:
+          - kuard/overlays/prod
+    deploy:
+      kubeContext: docker-desktop
+      kubectl:
+        flags:
+          global:
+            - --namespace=playground-kustomize

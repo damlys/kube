@@ -1,0 +1,12 @@
+image:
+  repository: gcr.io/kuar-demo/kuard-amd64
+  tag: v0.9-green
+
+configEnvs: {}
+secretConfigEnvs: {}
+configFiles: {}
+secretConfigFiles: {}
+
+httpServer:
+  minReplicas: 1
+  maxReplicas: 1

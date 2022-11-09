@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kuard-http-server-prod
+  namespace: playground-raw
+  labels:
+    app.kubernetes.io/name: kuard
+    app.kubernetes.io/component: http-server
+    app.kubernetes.io/instance: prod
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kuard
+      app.kubernetes.io/component: http-server
+      app.kubernetes.io/instance: prod
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: kuard
+        app.kubernetes.io/component: http-server
+        app.kubernetes.io/instance: prod
+    spec:
+      containers:
+        - name: http-server
+          image: gcr.io/kuar-demo/kuard-amd64:v0.9-green
+          envFrom:
+            - configMapRef:
+                name: kuard-config-envs-prod
+            - secretRef:
+                name: kuard-config-envs-prod
+          volumeMounts:
+            - name: config-files
+              mountPath: /run/secrets/kuard
+              readOnly: true
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              port: http
+              path: /ready
+          livenessProbe:
+            httpGet:
+              port: http
+              path: /healthy
+          resources:
+            requests:
+              cpu: 1m
+              memory: 1M
+            limits:
+              cpu: 250m
+              memory: 256M
+      volumes:
+        - name: config-files
+          projected:
+            sources:
+              - configMap:
+                  name: kuard-config-files-prod
+              - secret:
+                  name: kuard-config-files-prod

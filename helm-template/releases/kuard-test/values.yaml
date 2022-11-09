@@ -1,0 +1,16 @@
+configEnvs:
+  CONFIG_A: test CONFIG_A
+  CONFIG_B: test CONFIG_B
+secretConfigEnvs:
+  SECRET_A: test SECRET_A
+  SECRET_B: test SECRET_B
+configFiles:
+  config.json: |
+    {
+      "data": "test config.json"
+    }
+secretConfigFiles:
+  secret.json: |
+    {
+      "data": "test secret.json"
+    }

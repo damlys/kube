@@ -1,0 +1,16 @@
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: kuard-http-server-prod
+  namespace: playground-raw
+  labels:
+    app.kubernetes.io/name: kuard
+    app.kubernetes.io/component: http-server
+    app.kubernetes.io/instance: prod
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: kuard-http-server-prod
+  minReplicas: 1
+  maxReplicas: 2

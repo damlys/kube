@@ -1,0 +1,19 @@
+configEnvs:
+  CONFIG_A: prod CONFIG_A
+  CONFIG_B: prod CONFIG_B
+secretConfigEnvs:
+  SECRET_A: prod SECRET_A
+  SECRET_B: prod SECRET_B
+configFiles:
+  config.json: |
+    {
+      "data": "prod config.json"
+    }
+secretConfigFiles:
+  secret.json: |
+    {
+      "data": "prod secret.json"
+    }
+
+httpServer:
+  maxReplicas: 2

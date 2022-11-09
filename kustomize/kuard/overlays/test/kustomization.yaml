@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../base
+configMapGenerator:
+  - name: config-envs
+    literals:
+      - CONFIG_A=test CONFIG_A
+      - CONFIG_B=test CONFIG_B
+    behavior: merge
+secretGenerator:
+  - name: config-envs
+    literals:
+      - SECRET_A=test SECRET_A
+      - SECRET_B=test SECRET_B
+    behavior: merge
+namespace: playground-kustomize
+namePrefix: kuard-
+nameSuffix: -test
+commonLabels:
+  app.kubernetes.io/name: kuard
+  app.kubernetes.io/instance: test
