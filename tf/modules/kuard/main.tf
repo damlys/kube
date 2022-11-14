@@ -1,6 +1,6 @@
 resource "kubernetes_config_map" "config_envs" {
   metadata {
-    name      = "${var.name}-config-envs"
+    name      = "${var.name}-config-envs-${substr(md5(jsonencode(var.config_envs)), 0, 6)}"
     namespace = var.namespace
     labels    = local.metadata_labels
   }
@@ -9,7 +9,7 @@ resource "kubernetes_config_map" "config_envs" {
 
 resource "kubernetes_secret" "config_envs" {
   metadata {
-    name      = "${var.name}-config-envs"
+    name      = "${var.name}-config-envs-${substr(nonsensitive(md5(jsonencode(var.secret_config_envs))), 0, 6)}"
     namespace = var.namespace
     labels    = local.metadata_labels
   }
@@ -18,7 +18,7 @@ resource "kubernetes_secret" "config_envs" {
 
 resource "kubernetes_config_map" "config_files" {
   metadata {
-    name      = "${var.name}-config-files"
+    name      = "${var.name}-config-files-${substr(md5(jsonencode(var.config_files)), 0, 6)}"
     namespace = var.namespace
     labels    = local.metadata_labels
   }
@@ -27,7 +27,7 @@ resource "kubernetes_config_map" "config_files" {
 
 resource "kubernetes_secret" "config_files" {
   metadata {
-    name      = "${var.name}-config-files"
+    name      = "${var.name}-config-files-${substr(nonsensitive(md5(jsonencode(var.secret_config_files))), 0, 6)}"
     namespace = var.namespace
     labels    = local.metadata_labels
   }
@@ -54,9 +54,6 @@ resource "kubernetes_deployment" "http_server" {
         labels = merge(local.metadata_labels, {
           "app.kubernetes.io/component" = "http-server"
         })
-        annotations = {
-          "checksum/configs" = local.configs_checksum
-        }
       }
       spec {
         container {
