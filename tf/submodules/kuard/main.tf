@@ -44,6 +44,9 @@ resource "kubernetes_deployment" "http_server" {
   }
   spec {
     replicas = var.min_http_server_replicas
+    strategy {
+      type = "RollingUpdate"
+    }
     selector {
       match_labels = merge(local.selector_labels, {
         "app.kubernetes.io/component" = "http-server"

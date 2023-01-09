@@ -5,7 +5,7 @@ resource "kubernetes_namespace" "playground_tf" {
 }
 
 module "kuard_test" {
-  source = "./modules/kuard"
+  source = "../../submodules/kuard"
 
   name      = "kuard-test"
   namespace = kubernetes_namespace.playground_tf.metadata.0.name
@@ -19,15 +19,15 @@ module "kuard_test" {
     SECRET_B = "test SECRET_B"
   }
   config_files = {
-    "config.json" = file("${path.module}/resources/kuard_test/config.json")
+    "config.json" = file("${path.module}/assets/kuard_test/config.json")
   }
   secret_config_files = {
-    "secret.json" = file("${path.module}/resources/kuard_test/secret.json")
+    "secret.json" = file("${path.module}/assets/kuard_test/secret.json")
   }
 }
 
 module "kuard_prod" {
-  source = "./modules/kuard"
+  source = "../../submodules/kuard"
 
   name      = "kuard-prod"
   namespace = kubernetes_namespace.playground_tf.metadata.0.name
@@ -41,10 +41,10 @@ module "kuard_prod" {
     SECRET_B = "prod SECRET_B"
   }
   config_files = {
-    "config.json" = file("${path.module}/resources/kuard_prod/config.json")
+    "config.json" = file("${path.module}/assets/kuard_prod/config.json")
   }
   secret_config_files = {
-    "secret.json" = file("${path.module}/resources/kuard_prod/secret.json")
+    "secret.json" = file("${path.module}/assets/kuard_prod/secret.json")
   }
 
   max_http_server_replicas = 2

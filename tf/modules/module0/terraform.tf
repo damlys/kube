@@ -12,7 +12,7 @@ terraform {
     config_path    = "~/.kube/config"
     config_context = "docker-desktop"
     namespace      = "default"
-    secret_suffix  = "kuard"
+    secret_suffix  = "module0"
   }
 }
 
