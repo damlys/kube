@@ -22,6 +22,7 @@ spec:
       annotations:
         checksum/configs: "{{ include "kuard.configsChecksum" $ }}"
     spec:
+      serviceAccountName: "{{ .Release.Name }}-general"
       containers:
         - name: http-server
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

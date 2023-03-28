@@ -23,6 +23,7 @@ spec:
         app.kubernetes.io/component: http-server
         app.kubernetes.io/instance: prod
     spec:
+      serviceAccountName: kuard-general-prod
       containers:
         - name: http-server
           image: gcr.io/kuar-demo/kuard-amd64:v0.9-green

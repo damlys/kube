@@ -34,6 +34,16 @@ resource "kubernetes_secret" "config_files" {
   data = var.secret_config_files
 }
 
+resource "kubernetes_service_account" "general" {
+  metadata {
+    name      = "${var.name}-general"
+    namespace = var.namespace
+    labels = merge(local.metadata_labels, {
+      "app.kubernetes.io/component" = "general"
+    })
+  }
+}
+
 resource "kubernetes_deployment" "http_server" {
   metadata {
     name      = "${var.name}-http-server"
@@ -59,6 +69,7 @@ resource "kubernetes_deployment" "http_server" {
         })
       }
       spec {
+        service_account_name = kubernetes_service_account.general.metadata.0.name
         container {
           name  = "http-server"
           image = "${var.image_name}:${var.image_tag}"

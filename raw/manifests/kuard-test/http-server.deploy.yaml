@@ -23,6 +23,7 @@ spec:
         app.kubernetes.io/component: http-server
         app.kubernetes.io/instance: test
     spec:
+      serviceAccountName: kuard-general-test
       containers:
         - name: http-server
           image: gcr.io/kuar-demo/kuard-amd64:v0.9-green

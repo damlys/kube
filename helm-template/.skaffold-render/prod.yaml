@@ -1,4 +1,18 @@
 ---
+# Source: kuard/templates/general.sa.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: "kuard-prod-general"
+  namespace: "playground-helm"
+  labels:
+    app.kubernetes.io/component: general
+    app.kubernetes.io/name: kuard
+    app.helm.sh/release: "kuard-prod"
+    app.helm.sh/chart: "kuard-0.0.0"
+    app.skaffold.dev/artifact: "gcr_io_kuar_demo_kuard_amd64"
+    app.skaffold.dev/tag: "v0_9_green"
+---
 # Source: kuard/templates/configs.yaml
 apiVersion: v1
 kind: Secret
@@ -96,6 +110,7 @@ spec:
       annotations:
         checksum/configs: "79e56544d89db096192149038aa32ca1e5cecec0ed6b9c1154ea50971a29ba4a"
     spec:
+      serviceAccountName: "kuard-prod-general"
       containers:
         - name: http-server
           image: "gcr.io/kuar-demo/kuard-amd64:v0.9-green"
