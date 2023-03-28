@@ -70,10 +70,10 @@ metadata:
   namespace: playground-kustomize
 spec:
   ports:
-  - name: http
-    port: 8080
-    protocol: TCP
-    targetPort: http
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: http
   selector:
     app.kubernetes.io/component: http-server
     app.kubernetes.io/instance: prod
@@ -106,45 +106,45 @@ spec:
         app.kubernetes.io/name: kuard
     spec:
       containers:
-      - envFrom:
-        - configMapRef:
-            name: kuard-config-envs-prod-hdh6t8thgh
-        - secretRef:
-            name: kuard-config-envs-prod-cdc29986d5
-        image: gcr.io/kuar-demo/kuard-amd64:v0.9-green
-        livenessProbe:
-          httpGet:
-            path: /healthy
-            port: http
-        name: http-server
-        ports:
-        - containerPort: 8080
-          name: http
-          protocol: TCP
-        readinessProbe:
-          httpGet:
-            path: /ready
-            port: http
-        resources:
-          limits:
-            cpu: 250m
-            memory: 256M
-          requests:
-            cpu: 1m
-            memory: 1M
-        volumeMounts:
-        - mountPath: /run/secrets/kuard
-          name: config-files
-          readOnly: true
+        - envFrom:
+            - configMapRef:
+                name: kuard-config-envs-prod-hdh6t8thgh
+            - secretRef:
+                name: kuard-config-envs-prod-cdc29986d5
+          image: gcr.io/kuar-demo/kuard-amd64:v0.9-green
+          livenessProbe:
+            httpGet:
+              path: /healthy
+              port: http
+          name: http-server
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: http
+          resources:
+            limits:
+              cpu: 250m
+              memory: 256M
+            requests:
+              cpu: 1m
+              memory: 1M
+          volumeMounts:
+            - mountPath: /run/secrets/kuard
+              name: config-files
+              readOnly: true
       serviceAccountName: kuard-general-prod
       volumes:
-      - name: config-files
-        projected:
-          sources:
-          - configMap:
-              name: kuard-config-files-prod-dd84h7f69c
-          - secret:
-              name: kuard-config-files-prod-bhcm7c8fc7
+        - name: config-files
+          projected:
+            sources:
+              - configMap:
+                  name: kuard-config-files-prod-dd84h7f69c
+              - secret:
+                  name: kuard-config-files-prod-bhcm7c8fc7
 ---
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
