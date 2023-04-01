@@ -4,12 +4,18 @@ data:
   CONFIG_B: prod CONFIG_B
 kind: ConfigMap
 metadata:
+  labels:
+    app.kubernetes.io/instance: prod
+    app.kubernetes.io/name: kuard
   name: kuard-config-envs-prod
   namespace: playground-raw
 ---
 apiVersion: v1
 kind: Secret
 metadata:
+  labels:
+    app.kubernetes.io/instance: prod
+    app.kubernetes.io/name: kuard
   name: kuard-config-envs-prod
   namespace: playground-raw
 stringData:
@@ -25,12 +31,18 @@ data:
     }
 kind: ConfigMap
 metadata:
+  labels:
+    app.kubernetes.io/instance: prod
+    app.kubernetes.io/name: kuard
   name: kuard-config-files-prod
   namespace: playground-raw
 ---
 apiVersion: v1
 kind: Secret
 metadata:
+  labels:
+    app.kubernetes.io/instance: prod
+    app.kubernetes.io/name: kuard
   name: kuard-config-files-prod
   namespace: playground-raw
 stringData:

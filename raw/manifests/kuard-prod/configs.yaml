@@ -3,6 +3,9 @@ kind: ConfigMap
 metadata:
   name: kuard-config-envs-prod
   namespace: playground-raw
+  labels:
+    app.kubernetes.io/name: kuard
+    app.kubernetes.io/instance: prod
 data:
   CONFIG_A: prod CONFIG_A
   CONFIG_B: prod CONFIG_B
@@ -13,6 +16,9 @@ kind: Secret
 metadata:
   name: kuard-config-envs-prod
   namespace: playground-raw
+  labels:
+    app.kubernetes.io/name: kuard
+    app.kubernetes.io/instance: prod
 type: Opaque
 stringData:
   SECRET_A: prod SECRET_A
@@ -24,6 +30,9 @@ kind: ConfigMap
 metadata:
   name: kuard-config-files-prod
   namespace: playground-raw
+  labels:
+    app.kubernetes.io/name: kuard
+    app.kubernetes.io/instance: prod
 data:
   config.json: |
     {
@@ -36,6 +45,9 @@ kind: Secret
 metadata:
   name: kuard-config-files-prod
   namespace: playground-raw
+  labels:
+    app.kubernetes.io/name: kuard
+    app.kubernetes.io/instance: prod
 type: Opaque
 stringData:
   secret.json: |

@@ -19,6 +19,12 @@ kind: Secret
 metadata:
   name: "kuard-prod-config-envs"
   namespace: "playground-helm"
+  labels:
+    app.kubernetes.io/name: kuard
+    app.helm.sh/release: "kuard-prod"
+    app.helm.sh/chart: "kuard-0.0.0"
+    app.skaffold.dev/artifact: "gcr_io_kuar_demo_kuard_amd64"
+    app.skaffold.dev/tag: "v0_9_green"
 data:
   SECRET_A: "cHJvZCBTRUNSRVRfQQ=="
   SECRET_B: "cHJvZCBTRUNSRVRfQg=="
@@ -29,6 +35,12 @@ kind: Secret
 metadata:
   name: "kuard-prod-config-files"
   namespace: "playground-helm"
+  labels:
+    app.kubernetes.io/name: kuard
+    app.helm.sh/release: "kuard-prod"
+    app.helm.sh/chart: "kuard-0.0.0"
+    app.skaffold.dev/artifact: "gcr_io_kuar_demo_kuard_amd64"
+    app.skaffold.dev/tag: "v0_9_green"
 data:
   secret.json: "ewogICJkYXRhIjogInByb2Qgc2VjcmV0Lmpzb24iCn0K"
 ---
@@ -38,6 +50,12 @@ kind: ConfigMap
 metadata:
   name: "kuard-prod-config-envs"
   namespace: "playground-helm"
+  labels:
+    app.kubernetes.io/name: kuard
+    app.helm.sh/release: "kuard-prod"
+    app.helm.sh/chart: "kuard-0.0.0"
+    app.skaffold.dev/artifact: "gcr_io_kuar_demo_kuard_amd64"
+    app.skaffold.dev/tag: "v0_9_green"
 data:
   CONFIG_A: "prod CONFIG_A"
   CONFIG_B: "prod CONFIG_B"
@@ -48,6 +66,12 @@ kind: ConfigMap
 metadata:
   name: "kuard-prod-config-files"
   namespace: "playground-helm"
+  labels:
+    app.kubernetes.io/name: kuard
+    app.helm.sh/release: "kuard-prod"
+    app.helm.sh/chart: "kuard-0.0.0"
+    app.skaffold.dev/artifact: "gcr_io_kuar_demo_kuard_amd64"
+    app.skaffold.dev/tag: "v0_9_green"
 data:
   config.json: "{\n  \"data\": \"prod config.json\"\n}\n"
 ---
@@ -108,7 +132,7 @@ spec:
         app.skaffold.dev/artifact: "gcr_io_kuar_demo_kuard_amd64"
         app.skaffold.dev/tag: "v0_9_green"
       annotations:
-        checksum/configs: "79e56544d89db096192149038aa32ca1e5cecec0ed6b9c1154ea50971a29ba4a"
+        checksum/configs: "ca9b5357967490204bbc548aad05116548799c0073536aefdd3547c081e139ab"
     spec:
       serviceAccountName: "kuard-prod-general"
       containers:
