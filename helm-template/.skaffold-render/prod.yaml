@@ -132,7 +132,7 @@ spec:
         app.skaffold.dev/artifact: "gcr_io_kuar_demo_kuard_amd64"
         app.skaffold.dev/tag: "v0_9_green"
       annotations:
-        checksum/configs: "ca9b5357967490204bbc548aad05116548799c0073536aefdd3547c081e139ab"
+        checksum/configs: "7a96755025d8d8909d8b47b8f39b03e3c7ab2bb03167f02179fb319619a6b7e5"
     spec:
       serviceAccountName: "kuard-prod-general"
       containers:

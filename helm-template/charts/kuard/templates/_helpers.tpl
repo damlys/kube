@@ -11,5 +11,5 @@ app.skaffold.dev/tag: "{{ regexReplaceAll "[\\W]" .Values.image.tag "_" | trunc 
 {{- end -}}
 
 {{- define "kuard.configsChecksum" -}}
-{{- include (print $.Template.BasePath "/configs.yaml") $ | sha256sum -}}
+{{- list .Values.configEnvs .Values.secretConfigEnvs .Values.configFiles .Values.secretConfigFiles | toJson | sha256sum -}}
 {{- end -}}
