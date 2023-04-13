@@ -16,9 +16,10 @@ kind: PersistentVolumeClaim
 metadata: # kpt-merge: /wp-pv-claim
   name: wp-pv-claim
   labels:
-    app: wordpress
+    app: my-wordpress
   annotations:
     internal.kpt.dev/upstream-identifier: '|PersistentVolumeClaim|default|wp-pv-claim'
+    sample-annotation: sample-value
 spec:
   resources:
     requests:

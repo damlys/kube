@@ -16,13 +16,14 @@ kind: Service
 metadata: # kpt-merge: /wordpress
   name: wordpress
   labels:
-    app: wordpress
+    app: my-wordpress
   annotations:
     internal.kpt.dev/upstream-identifier: '|Service|default|wordpress'
+    sample-annotation: sample-value
 spec:
   type: LoadBalancer
   selector:
-    app: wordpress
+    app: my-wordpress
     tier: frontend
   ports:
     - protocol: TCP

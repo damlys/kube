@@ -12,3 +12,11 @@ pros:
 cons:
 
 -
+
+## 101
+
+```
+$ kpt live apply wordpress
+$ kpt live status wordpress
+$ kpt live destroy wordpress
+```
