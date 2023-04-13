@@ -1,0 +1,13 @@
+apiVersion: kpt.dev/v1
+kind: Kptfile
+metadata:
+  name: kuard
+pipeline:
+  mutators:
+    - image: gcr.io/kpt-fn/set-image:v0.1.1
+      configMap:
+        name: nginx
+        newName: gcr.io/kuar-demo/kuard-amd64
+        newTag: v0.9-green
+  validators:
+    - image: gcr.io/kpt-fn/kubeval:v0.3.0
