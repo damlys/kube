@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: # kpt-merge: /http-server
+  name: kuard-http-server-test
+  labels:
+    app.kubernetes.io/component: http-server
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/name: kuard
+  annotations:
+    internal.kpt.dev/upstream-identifier: apps|Deployment|default|http-server
+  namespace: playground-kpt
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: http-server
+      app.kubernetes.io/instance: test
+      app.kubernetes.io/name: kuard
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: http-server
+        app.kubernetes.io/instance: test
+        app.kubernetes.io/name: kuard
+    spec:
+      serviceAccountName: kuard-general-test
+      containers:
+        - name: http-server
+          image: gcr.io/kuar-demo/kuard-amd64:v0.9-green
+          # envFrom:
+          #   - configMapRef:
+          #       name: config-envs
+          #   - secretRef:
+          #       name: config-envs
+          # volumeMounts:
+          #   - name: config-files
+          #     mountPath: /run/secrets/kuard
+          #     readOnly: true
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              port: http
+              path: /ready
+          livenessProbe:
+            httpGet:
+              port: http
+              path: /healthy
+          resources:
+            requests:
+              cpu: 1m
+              memory: 1M
+            limits:
+              cpu: 250m
+              memory: 256M
+      # volumes:
+      #   - name: config-files
+      #     projected:
+      #       sources:
+      #         - configMap:
+      #             name: config-files
+      #         - secret:
+      #             name: config-files

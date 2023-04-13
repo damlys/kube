@@ -2,15 +2,30 @@ apiVersion: kpt.dev/v1
 kind: Kptfile
 metadata:
   name: kuard-test
+  labels:
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/name: kuard
 upstream:
   type: git
   git:
     repo: https://github.com/damlys/kube
     directory: /kpt/packages/kuard
-    ref: 639ebdd6a3e7f44fb39cd4bb15254dc5d7ecb1c1
+    ref: 3a56111b0a43510b4788335ad10637f708b6d75c
   updateStrategy: resource-merge
+upstreamLock:
+  type: git
+  git:
+    repo: https://github.com/damlys/kube
+    directory: /kpt/packages/kuard
+    ref: 3a56111b0a43510b4788335ad10637f708b6d75c
+    commit: 3a56111b0a43510b4788335ad10637f708b6d75c
 pipeline:
   mutators:
+    - image: gcr.io/kpt-fn/set-image:v0.1.1
+      configMap:
+        name: kuard
+        newName: gcr.io/kuar-demo/kuard-amd64
+        newTag: v0.9-green
     - image: gcr.io/kpt-fn/set-namespace:v0.4.1
       configMap:
         namespace: playground-kpt
@@ -24,3 +39,5 @@ pipeline:
       configMap:
         app.kubernetes.io/name: kuard
         app.kubernetes.io/instance: test
+  validators:
+    - image: gcr.io/kpt-fn/kubeval:v0.3.0

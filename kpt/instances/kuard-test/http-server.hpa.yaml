@@ -1,0 +1,18 @@
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata: # kpt-merge: /http-server
+  name: kuard-http-server-test
+  labels:
+    app.kubernetes.io/component: http-server
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/name: kuard
+  annotations:
+    internal.kpt.dev/upstream-identifier: autoscaling|HorizontalPodAutoscaler|default|http-server
+  namespace: playground-kpt
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: kuard-http-server-test
+  minReplicas: 1
+  maxReplicas: 2

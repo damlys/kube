@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata: # kpt-merge: /http-server
+  name: kuard-http-server-test
+  labels:
+    app.kubernetes.io/component: http-server
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/name: kuard
+  annotations:
+    internal.kpt.dev/upstream-identifier: '|Service|default|http-server'
+  namespace: playground-kpt
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/component: http-server
+    app.kubernetes.io/instance: test
+    app.kubernetes.io/name: kuard
+  ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: http
