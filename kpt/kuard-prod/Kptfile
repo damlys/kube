@@ -1,0 +1,24 @@
+apiVersion: kpt.dev/v1
+kind: Kptfile
+metadata:
+  name: kuard-prod
+upstream:
+  type: git
+  git:
+    repo: https://github.com/damlys/kube
+    directory: /kpt/kuard
+    ref: 764ff5f24edcd455f72ce17678a21b97e7190775
+  updateStrategy: resource-merge
+pipeline:
+  mutators:
+    - image: gcr.io/kpt-fn/set-namespace:v0.4.1
+      configMap:
+        namespace: playground-kpt
+    - image: gcr.io/kpt-fn/ensure-name-substring:v0.2.0
+      configMap:
+        prepend: kuard-
+        append: -prod
+    - image: gcr.io/kpt-fn/set-labels:v0.2.0
+      configMap:
+        app.kubernetes.io/name: kuard
+        app.kubernetes.io/instance: prod

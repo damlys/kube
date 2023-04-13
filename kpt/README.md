@@ -18,5 +18,9 @@ cons:
 ```
 $ kubectl create namespace playground-kpt
 
-$
+$ kpt fn render kuard
+
+$ kpt live apply kuard
+$ kpt live status kuard
+$ kpt live destroy kuard
 ```
