@@ -20,15 +20,15 @@ spec:
       containers:
         - name: http-server
           image: kuard
-          envFrom:
-            - configMapRef:
-                name: config-envs
-            - secretRef:
-                name: config-envs
-          volumeMounts:
-            - name: config-files
-              mountPath: /run/secrets/kuard
-              readOnly: true
+          # envFrom:
+          #   - configMapRef:
+          #       name: config-envs
+          #   - secretRef:
+          #       name: config-envs
+          # volumeMounts:
+          #   - name: config-files
+          #     mountPath: /run/secrets/kuard
+          #     readOnly: true
           ports:
             - name: http
               containerPort: 8080
@@ -48,11 +48,11 @@ spec:
             limits:
               cpu: 250m
               memory: 256M
-      volumes:
-        - name: config-files
-          projected:
-            sources:
-              - configMap:
-                  name: config-files
-              - secret:
-                  name: config-files
+      # volumes:
+      #   - name: config-files
+      #     projected:
+      #       sources:
+      #         - configMap:
+      #             name: config-files
+      #         - secret:
+      #             name: config-files

@@ -6,8 +6,8 @@ upstream:
   type: git
   git:
     repo: https://github.com/damlys/kube
-    directory: /kpt/kuard
-    ref: 764ff5f24edcd455f72ce17678a21b97e7190775
+    directory: /kpt/packages/kuard
+    ref: 639ebdd6a3e7f44fb39cd4bb15254dc5d7ecb1c1
   updateStrategy: resource-merge
 pipeline:
   mutators:
