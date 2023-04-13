@@ -2,11 +2,11 @@ apiVersion: kpt.dev/v1
 kind: Kptfile
 metadata:
   name: mysql
+  labels:
+    app: my-wordpress
+    tier: mysql
   annotations:
     sample-annotation: sample-value
-  labels:
-    tier: mysql
-    app: my-wordpress
 info:
   emails:
     - kpt-team@google.com
