@@ -18,11 +18,11 @@ metadata: # kpt-merge: /wp-pv-claim
   labels:
     app: my-wordpress
   annotations:
-    internal.kpt.dev/upstream-identifier: '|PersistentVolumeClaim|default|wp-pv-claim'
+    internal.kpt.dev/upstream-identifier: "|PersistentVolumeClaim|default|wp-pv-claim"
     sample-annotation: sample-value
 spec:
   resources:
     requests:
-      storage: 4Gi
+      storage: 3Gi
   accessModes:
     - ReadWriteOnce
