@@ -1,0 +1,7 @@
+apiVersion: kpt.dev/v1alpha1
+kind: ResourceGroup
+metadata:
+  name: inventory-25341079
+  namespace: playground-kpt
+  labels:
+    cli-utils.sigs.k8s.io/inventory-id: 6e461172242c06cdcfe22b3bfcba62bbdc66793f-1681411697907246000
