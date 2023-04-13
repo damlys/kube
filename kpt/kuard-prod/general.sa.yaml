@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata: # kpt-merge: /general
+  name: kuard-general-prod
+  labels:
+    app.kubernetes.io/component: general
+    app.kubernetes.io/instance: prod
+    app.kubernetes.io/name: kuard
+  annotations:
+    internal.kpt.dev/upstream-identifier: '|ServiceAccount|default|general'
+  namespace: playground-kpt

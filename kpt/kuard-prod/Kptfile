@@ -2,6 +2,9 @@ apiVersion: kpt.dev/v1
 kind: Kptfile
 metadata:
   name: kuard-prod
+  labels:
+    app.kubernetes.io/instance: prod
+    app.kubernetes.io/name: kuard
 upstream:
   type: git
   git:
@@ -9,6 +12,13 @@ upstream:
     directory: /kpt/kuard
     ref: 764ff5f24edcd455f72ce17678a21b97e7190775
   updateStrategy: resource-merge
+upstreamLock:
+  type: git
+  git:
+    repo: https://github.com/damlys/kube
+    directory: /kpt/kuard
+    ref: 764ff5f24edcd455f72ce17678a21b97e7190775
+    commit: 764ff5f24edcd455f72ce17678a21b97e7190775
 pipeline:
   mutators:
     - image: gcr.io/kpt-fn/set-namespace:v0.4.1
@@ -17,8 +27,17 @@ pipeline:
     - image: gcr.io/kpt-fn/ensure-name-substring:v0.2.0
       configMap:
         prepend: kuard-
+    - image: gcr.io/kpt-fn/ensure-name-substring:v0.2.0
+      configMap:
         append: -prod
     - image: gcr.io/kpt-fn/set-labels:v0.2.0
       configMap:
-        app.kubernetes.io/name: kuard
         app.kubernetes.io/instance: prod
+        app.kubernetes.io/name: kuard
+    - image: gcr.io/kpt-fn/set-image:v0.1.1
+      configMap:
+        name: kuard
+        newName: gcr.io/kuar-demo/kuard-amd64
+        newTag: v0.9-green
+  validators:
+    - image: gcr.io/kpt-fn/kubeval:v0.3.0
