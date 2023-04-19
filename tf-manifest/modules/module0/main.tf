@@ -1,18 +1,18 @@
-resource "kubectl_manifest" "playground_tf_kubectl_namespace" {
-  yaml_body = yamlencode({
+resource "kubernetes_manifest" "playground_tf_manifest_namespace" {
+  manifest = {
     apiVersion = "v1"
     kind       = "Namespace"
     metadata = {
-      name = "playground-tf-kubectl"
+      name = "playground-tf-manifest"
     }
-  })
+  }
 }
 
 module "kuard_test" {
   source = "../../submodules/kuard"
 
   name      = "kuard-test"
-  namespace = kubectl_manifest.playground_tf_kubectl_namespace.name
+  namespace = kubernetes_manifest.playground_tf_manifest_namespace.object.metadata.name
 
   config_envs = {
     CONFIG_A = "test CONFIG_A"
@@ -34,7 +34,7 @@ module "kuard_prod" {
   source = "../../submodules/kuard"
 
   name      = "kuard-prod"
-  namespace = kubectl_manifest.playground_tf_kubectl_namespace.name
+  namespace = kubernetes_manifest.playground_tf_manifest_namespace.object.metadata.name
 
   config_envs = {
     CONFIG_A = "prod CONFIG_A"

@@ -1,5 +1,5 @@
-resource "kubectl_manifest" "config_envs_config_map" {
-  yaml_body = yamlencode({
+resource "kubernetes_manifest" "config_envs_config_map" {
+  manifest = {
     apiVersion = "v1"
     kind       = "ConfigMap"
     metadata = {
@@ -8,11 +8,11 @@ resource "kubectl_manifest" "config_envs_config_map" {
       labels    = local.metadata_labels
     }
     data = var.config_envs
-  })
+  }
 }
 
-resource "kubectl_manifest" "config_envs_secret" {
-  yaml_body = yamlencode({
+resource "kubernetes_manifest" "config_envs_secret" {
+  manifest = {
     apiVersion = "v1"
     kind       = "Secret"
     metadata = {
@@ -20,17 +20,12 @@ resource "kubectl_manifest" "config_envs_secret" {
       namespace = var.namespace
       labels    = local.metadata_labels
     }
-    stringData = var.secret_config_envs
-  })
-
-  sensitive_fields = [
-    "data",
-    "stringData",
-  ]
+    data = { for k, v in var.secret_config_envs : k => base64encode(v) }
+  }
 }
 
-resource "kubectl_manifest" "config_files_config_map" {
-  yaml_body = yamlencode({
+resource "kubernetes_manifest" "config_files_config_map" {
+  manifest = {
     apiVersion = "v1"
     kind       = "ConfigMap"
     metadata = {
@@ -39,11 +34,11 @@ resource "kubectl_manifest" "config_files_config_map" {
       labels    = local.metadata_labels
     }
     data = var.config_files
-  })
+  }
 }
 
-resource "kubectl_manifest" "config_files_secret" {
-  yaml_body = yamlencode({
+resource "kubernetes_manifest" "config_files_secret" {
+  manifest = {
     apiVersion = "v1"
     kind       = "Secret"
     metadata = {
@@ -51,17 +46,12 @@ resource "kubectl_manifest" "config_files_secret" {
       namespace = var.namespace
       labels    = local.metadata_labels
     }
-    stringData = var.secret_config_files
-  })
-
-  sensitive_fields = [
-    "data",
-    "stringData",
-  ]
+    data = { for k, v in var.secret_config_files : k => base64encode(v) }
+  }
 }
 
-resource "kubectl_manifest" "general_service_account" {
-  yaml_body = yamlencode({
+resource "kubernetes_manifest" "general_service_account" {
+  manifest = {
     apiVersion = "v1"
     kind       = "ServiceAccount"
     metadata = {
@@ -71,11 +61,11 @@ resource "kubectl_manifest" "general_service_account" {
         "app.kubernetes.io/component" = "general"
       })
     }
-  })
+  }
 }
 
-resource "kubectl_manifest" "http_server_deployment" {
-  yaml_body = yamlencode({
+resource "kubernetes_manifest" "http_server_deployment" {
+  manifest = {
     apiVersion = "apps/v1"
     kind       = "Deployment"
     metadata = {
@@ -105,7 +95,7 @@ resource "kubectl_manifest" "http_server_deployment" {
           }
         }
         spec = {
-          serviceAccountName = kubectl_manifest.general_service_account.name
+          serviceAccountName = kubernetes_manifest.general_service_account.object.metadata.name
           containers = [
             {
               name  = "http-server"
@@ -113,12 +103,12 @@ resource "kubectl_manifest" "http_server_deployment" {
               envFrom = [
                 {
                   configMapRef = {
-                    name = kubectl_manifest.config_envs_config_map.name
+                    name = kubernetes_manifest.config_envs_config_map.object.metadata.name
                   }
                 },
                 {
                   secretRef = {
-                    name = kubectl_manifest.config_envs_secret.name
+                    name = kubernetes_manifest.config_envs_secret.object.metadata.name
                   }
                 },
               ]
@@ -167,12 +157,12 @@ resource "kubectl_manifest" "http_server_deployment" {
                 sources = [
                   {
                     configMap = {
-                      name = kubectl_manifest.config_files_config_map.name
+                      name = kubernetes_manifest.config_files_config_map.object.metadata.name
                     }
                   },
                   {
                     secret = {
-                      name = kubectl_manifest.config_files_secret.name
+                      name = kubernetes_manifest.config_files_secret.object.metadata.name
                     }
                   },
                 ]
@@ -182,11 +172,11 @@ resource "kubectl_manifest" "http_server_deployment" {
         }
       }
     }
-  })
+  }
 }
 
-resource "kubectl_manifest" "http_server_horizontal_pod_autoscaler" {
-  yaml_body = yamlencode({
+resource "kubernetes_manifest" "http_server_horizontal_pod_autoscaler" {
+  manifest = {
     apiVersion = "autoscaling/v1"
     kind       = "HorizontalPodAutoscaler"
     metadata = {
@@ -200,16 +190,16 @@ resource "kubectl_manifest" "http_server_horizontal_pod_autoscaler" {
       scaleTargetRef = {
         apiVersion = "apps/v1"
         kind       = "Deployment"
-        name       = kubectl_manifest.http_server_deployment.name
+        name       = kubernetes_manifest.http_server_deployment.object.metadata.name
       }
       minReplicas = var.min_http_server_replicas
       maxReplicas = var.max_http_server_replicas
     }
-  })
+  }
 }
 
-resource "kubectl_manifest" "http_server_service" {
-  yaml_body = yamlencode({
+resource "kubernetes_manifest" "http_server_service" {
+  manifest = {
     apiVersion = "v1"
     kind       = "Service"
     metadata = {
@@ -221,7 +211,7 @@ resource "kubectl_manifest" "http_server_service" {
     }
     spec = {
       type     = "ClusterIP"
-      selector = yamldecode(kubectl_manifest.http_server_deployment.yaml_body_parsed).spec.selector.matchLabels
+      selector = kubernetes_manifest.http_server_deployment.object.spec.selector.matchLabels
       ports = [
         {
           name       = "http"
@@ -231,5 +221,5 @@ resource "kubectl_manifest" "http_server_service" {
         },
       ]
     }
-  })
+  }
 }

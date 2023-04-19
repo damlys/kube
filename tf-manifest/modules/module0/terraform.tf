@@ -2,9 +2,9 @@ terraform {
   required_version = ">= 1.3.3, < 2.0.0"
 
   required_providers {
-    kubectl = {
-      source  = "gavinbunney/kubectl"
-      version = ">= 1.14.0, < 2.0.0"
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = ">= 2.15.0, < 3.0.0"
     }
   }
 
@@ -12,11 +12,11 @@ terraform {
     config_path    = "~/.kube/config"
     config_context = "docker-desktop"
     namespace      = "default"
-    secret_suffix  = "module0-kubectl"
+    secret_suffix  = "tf-manifest.modules.module0"
   }
 }
 
-provider "kubectl" {
+provider "kubernetes" {
   config_path    = "~/.kube/config"
   config_context = "docker-desktop"
 }
