@@ -11,6 +11,9 @@ clientVersion:
   gitVersion: v1.25.3
 kustomizeVersion: v4.5.7
 
+$ kpt version
+1.0.0-beta.30
+
 $ helm version --short
 v3.10.1
 

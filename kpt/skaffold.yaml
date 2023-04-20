@@ -1,0 +1,24 @@
+apiVersion: skaffold/v3alpha1
+kind: Config
+profiles:
+  - name: test
+    manifests:
+      kpt:
+        - instances/kuard-test
+    deploy:
+      kubeContext: docker-desktop
+      kubectl:
+        flags:
+          global:
+            - --namespace=playground-kpt
+
+  - name: prod
+    manifests:
+      kpt:
+        - instances/kuard-prod
+    deploy:
+      kubeContext: docker-desktop
+      kubectl:
+        flags:
+          global:
+            - --namespace=playground-kpt
