@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: ConfigMap
+metadata: # kpt-merge: /config-envs
+  name: kuard-config-envs-prod
+  annotations:
+    internal.kpt.dev/upstream-identifier: '|ConfigMap|default|config-envs'
+  namespace: playground-kpt
+  labels:
+    app.kubernetes.io/instance: prod
+    app.kubernetes.io/name: kuard
+data: {}
+---
+apiVersion: v1
+kind: Secret
+metadata: # kpt-merge: /config-envs
+  name: kuard-config-envs-prod
+  annotations:
+    internal.kpt.dev/upstream-identifier: '|Secret|default|config-envs'
+  namespace: playground-kpt
+  labels:
+    app.kubernetes.io/instance: prod
+    app.kubernetes.io/name: kuard
+type: Opaque
+stringData: {}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata: # kpt-merge: /config-files
+  name: kuard-config-files-prod
+  annotations:
+    internal.kpt.dev/upstream-identifier: '|ConfigMap|default|config-files'
+  namespace: playground-kpt
+  labels:
+    app.kubernetes.io/instance: prod
+    app.kubernetes.io/name: kuard
+data: {}
+---
+apiVersion: v1
+kind: Secret
+metadata: # kpt-merge: /config-files
+  name: kuard-config-files-prod
+  annotations:
+    internal.kpt.dev/upstream-identifier: '|Secret|default|config-files'
+  namespace: playground-kpt
+  labels:
+    app.kubernetes.io/instance: prod
+    app.kubernetes.io/name: kuard
+type: Opaque
+stringData: {}

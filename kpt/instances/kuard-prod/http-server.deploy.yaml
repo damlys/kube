@@ -31,9 +31,9 @@ spec:
           image: gcr.io/kuar-demo/kuard-amd64:v0.9-green
           envFrom:
             - configMapRef:
-                name: config-envs
+                name: kuard-config-envs-prod
             - secretRef:
-                name: config-envs
+                name: kuard-config-envs-prod
           volumeMounts:
             - name: config-files
               mountPath: /run/secrets/kuard
@@ -62,6 +62,6 @@ spec:
           projected:
             sources:
               - configMap:
-                  name: config-files
+                  name: kuard-config-files-prod
               - secret:
-                  name: config-files
+                  name: kuard-config-files-prod
