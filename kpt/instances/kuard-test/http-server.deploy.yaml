@@ -29,15 +29,15 @@ spec:
       containers:
         - name: http-server
           image: gcr.io/kuar-demo/kuard-amd64:v0.9-green
-          # envFrom:
-          #   - configMapRef:
-          #       name: config-envs
-          #   - secretRef:
-          #       name: config-envs
-          # volumeMounts:
-          #   - name: config-files
-          #     mountPath: /run/secrets/kuard
-          #     readOnly: true
+          envFrom:
+            - configMapRef:
+                name: kuard-config-envs-test
+            - secretRef:
+                name: kuard-config-envs-test
+          volumeMounts:
+            - name: config-files
+              mountPath: /run/secrets/kuard
+              readOnly: true
           ports:
             - name: http
               containerPort: 8080
@@ -57,11 +57,11 @@ spec:
             limits:
               cpu: 250m
               memory: 256M
-      # volumes:
-      #   - name: config-files
-      #     projected:
-      #       sources:
-      #         - configMap:
-      #             name: config-files
-      #         - secret:
-      #             name: config-files
+      volumes:
+        - name: config-files
+          projected:
+            sources:
+              - configMap:
+                  name: kuard-config-files-test
+              - secret:
+                  name: kuard-config-files-test

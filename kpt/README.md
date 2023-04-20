@@ -13,17 +13,30 @@ cons:
 
 -
 
-## 101
+## adding new instances
 
 ```
-$ kubectl create namespace playground-kpt
-
-$ kpt pkg get https://github.com/damlys/kube.git/kpt/packages/kuard@639ebdd6a3e7f44fb39cd4bb15254dc5d7ecb1c1 instances/kuard-test
+$ kpt pkg get https://github.com/damlys/kube.git/kpt/packages/kuard@master instances/kuard-test
 $ kpt fn render instances/kuard-test
-$ kpt pkg update instances/kuard-test@3a56111b0a43510b4788335ad10637f708b6d75c
+$ kpt pkg update instances/kuard-test@master
 
 $ kpt live init instances/kuard-test
 $ kpt live apply instances/kuard-test
 $ kpt live status instances/kuard-test
 $ kpt live destroy instances/kuard-test
+```
+
+## 101
+
+```
+$ kubectl create namespace playground-kpt
+
+$ skaffold render --profile=test --output=.skaffold-render/test.yaml
+$ skaffold render --profile=prod --output=.skaffold-render/prod.yaml
+
+$ skaffold run --profile=test --port-forward
+$ skaffold run --profile=prod --port-forward
+
+$ skaffold delete --profile=test
+$ skaffold delete --profile=prod
 ```

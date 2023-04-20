@@ -10,15 +10,15 @@ upstream:
   git:
     repo: https://github.com/damlys/kube
     directory: /kpt/packages/kuard
-    ref: 3a56111b0a43510b4788335ad10637f708b6d75c
+    ref: feature/kpt
   updateStrategy: resource-merge
 upstreamLock:
   type: git
   git:
     repo: https://github.com/damlys/kube
     directory: /kpt/packages/kuard
-    ref: 3a56111b0a43510b4788335ad10637f708b6d75c
-    commit: 3a56111b0a43510b4788335ad10637f708b6d75c
+    ref: feature/kpt
+    commit: 32ec337d3a72f3cf46bba57778acc42f6236990f
 pipeline:
   mutators:
     - image: gcr.io/kpt-fn/set-image:v0.1.1
@@ -39,5 +39,3 @@ pipeline:
       configMap:
         app.kubernetes.io/name: kuard
         app.kubernetes.io/instance: test
-  validators:
-    - image: gcr.io/kpt-fn/kubeval:v0.3.0
