@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata: # kpt-merge: /general
+  name: general
+  labels:
+    app.kubernetes.io/component: general
+  annotations:
+    internal.kpt.dev/upstream-identifier: '|ServiceAccount|default|general'

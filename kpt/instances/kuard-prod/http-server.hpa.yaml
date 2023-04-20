@@ -1,0 +1,15 @@
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata: # kpt-merge: /http-server
+  name: http-server
+  labels:
+    app.kubernetes.io/component: http-server
+  annotations:
+    internal.kpt.dev/upstream-identifier: 'autoscaling|HorizontalPodAutoscaler|default|http-server'
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: http-server
+  minReplicas: 1 # kpt-set: ${min-http-server-replicas}
+  maxReplicas: 1 # kpt-set: ${max-http-server-replicas}

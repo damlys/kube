@@ -1,0 +1,42 @@
+apiVersion: kpt.dev/v1
+kind: Kptfile
+metadata:
+  name: kuard-prod
+upstream:
+  type: git
+  git:
+    repo: https://github.com/damlys/kube
+    directory: /kpt/packages/kuard
+    ref: main
+  updateStrategy: resource-merge
+upstreamLock:
+  type: git
+  git:
+    repo: https://github.com/damlys/kube
+    directory: /kpt/packages/kuard
+    ref: main
+    commit: cd85a07de8b638f240959d39fc26bd0024a083c6
+pipeline:
+  mutators:
+    - image: gcr.io/kpt-fn/set-image:v0.1.1
+      configMap:
+        name: kuard
+        newName: gcr.io/kuar-demo/kuard-amd64
+        newTag: v0.9-green
+    - image: gcr.io/kpt-fn/set-namespace:v0.4.1
+      configMap:
+        namespace: playground-kpt
+    - image: gcr.io/kpt-fn/ensure-name-substring:v0.2.0
+      configMap:
+        prepend: kuard-
+    - image: gcr.io/kpt-fn/ensure-name-substring:v0.2.0
+      configMap:
+        append: -prod
+    - image: gcr.io/kpt-fn/set-labels:v0.2.0
+      configMap:
+        app.kubernetes.io/instance: prod
+        app.kubernetes.io/name: kuard
+    - image: gcr.io/kpt-fn/apply-setters:v0.2.0
+      configMap:
+        max-http-server-replicas: "2"
+        min-http-server-replicas: "1"
