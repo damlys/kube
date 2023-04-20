@@ -1,0 +1,171 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    internal.kpt.dev/upstream-identifier: apps|Deployment|default|http-server
+  labels:
+    app.kubernetes.io/component: http-server
+    app.kubernetes.io/instance: prod
+    app.kubernetes.io/name: kuard
+  name: kuard-http-server-prod
+  namespace: playground-kpt
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: http-server
+      app.kubernetes.io/instance: prod
+      app.kubernetes.io/name: kuard
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: http-server
+        app.kubernetes.io/instance: prod
+        app.kubernetes.io/name: kuard
+    spec:
+      containers:
+        - envFrom:
+            - configMapRef:
+                name: kuard-config-envs-prod
+            - secretRef:
+                name: kuard-config-envs-prod
+          image: gcr.io/kuar-demo/kuard-amd64:v0.9-green
+          livenessProbe:
+            httpGet:
+              path: /healthy
+              port: http
+          name: http-server
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: http
+          resources:
+            limits:
+              cpu: 250m
+              memory: 256M
+            requests:
+              cpu: 1m
+              memory: 1M
+          volumeMounts:
+            - mountPath: /run/secrets/kuard
+              name: config-files
+              readOnly: true
+      serviceAccountName: kuard-general-prod
+      volumes:
+        - name: config-files
+          projected:
+            sources:
+              - configMap:
+                  name: kuard-config-files-prod
+              - secret:
+                  name: kuard-config-files-prod
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  annotations:
+    internal.kpt.dev/upstream-identifier: autoscaling|HorizontalPodAutoscaler|default|http-server
+  labels:
+    app.kubernetes.io/component: http-server
+    app.kubernetes.io/instance: prod
+    app.kubernetes.io/name: kuard
+  name: kuard-http-server-prod
+  namespace: playground-kpt
+spec:
+  maxReplicas: 2
+  minReplicas: 1
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: kuard-http-server-prod
+---
+apiVersion: v1
+data: {}
+kind: ConfigMap
+metadata:
+  annotations:
+    internal.kpt.dev/upstream-identifier: '|ConfigMap|default|config-envs'
+  labels:
+    app.kubernetes.io/instance: prod
+    app.kubernetes.io/name: kuard
+  name: kuard-config-envs-prod
+  namespace: playground-kpt
+---
+apiVersion: v1
+data: {}
+kind: ConfigMap
+metadata:
+  annotations:
+    internal.kpt.dev/upstream-identifier: '|ConfigMap|default|config-files'
+  labels:
+    app.kubernetes.io/instance: prod
+    app.kubernetes.io/name: kuard
+  name: kuard-config-files-prod
+  namespace: playground-kpt
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  annotations:
+    internal.kpt.dev/upstream-identifier: '|Secret|default|config-envs'
+  labels:
+    app.kubernetes.io/instance: prod
+    app.kubernetes.io/name: kuard
+  name: kuard-config-envs-prod
+  namespace: playground-kpt
+stringData: {}
+type: Opaque
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  annotations:
+    internal.kpt.dev/upstream-identifier: '|Secret|default|config-files'
+  labels:
+    app.kubernetes.io/instance: prod
+    app.kubernetes.io/name: kuard
+  name: kuard-config-files-prod
+  namespace: playground-kpt
+stringData: {}
+type: Opaque
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    internal.kpt.dev/upstream-identifier: '|Service|default|http-server'
+  labels:
+    app.kubernetes.io/component: http-server
+    app.kubernetes.io/instance: prod
+    app.kubernetes.io/name: kuard
+  name: kuard-http-server-prod
+  namespace: playground-kpt
+spec:
+  ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: http
+  selector:
+    app.kubernetes.io/component: http-server
+    app.kubernetes.io/instance: prod
+    app.kubernetes.io/name: kuard
+  type: ClusterIP
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    internal.kpt.dev/upstream-identifier: '|ServiceAccount|default|general'
+  labels:
+    app.kubernetes.io/component: general
+    app.kubernetes.io/instance: prod
+    app.kubernetes.io/name: kuard
+  name: kuard-general-prod
+  namespace: playground-kpt
