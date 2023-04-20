@@ -9,5 +9,16 @@ pipeline:
         name: kuard
         newName: gcr.io/kuar-demo/kuard-amd64
         newTag: v0.9-green
-  validators:
-    - image: gcr.io/kpt-fn/kubeval:v0.3.0
+    - image: gcr.io/kpt-fn/set-namespace:v0.4.1
+      configMap:
+        namespace: TODO
+    - image: gcr.io/kpt-fn/ensure-name-substring:v0.2.0
+      configMap:
+        prepend: kuard-
+    - image: gcr.io/kpt-fn/ensure-name-substring:v0.2.0
+      configMap:
+        append: -TODO
+    - image: gcr.io/kpt-fn/set-labels:v0.2.0
+      configMap:
+        app.kubernetes.io/name: kuard
+        app.kubernetes.io/instance: TODO
