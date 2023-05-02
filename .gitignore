@@ -1,2 +1,10 @@
+.DS_Store
+*.bak
+*.swp
+*.tmp
+*~
+desktop.ini
+thumbs.db
+
 .kpt-pipeline
 .terraform
