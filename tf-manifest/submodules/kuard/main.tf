@@ -99,7 +99,7 @@ resource "kubernetes_manifest" "http_server_deployment" {
           containers = [
             {
               name  = "http-server"
-              image = "${var.image_name}:${var.image_tag}"
+              image = "${var.image_repository}:${var.image_tag}"
               envFrom = [
                 {
                   configMapRef = {

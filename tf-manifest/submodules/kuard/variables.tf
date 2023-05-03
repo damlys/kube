@@ -7,7 +7,7 @@ variable "namespace" {
   default = "default"
 }
 
-variable "image_name" {
+variable "image_repository" {
   type    = string
   default = "gcr.io/kuar-demo/kuard-amd64"
 }

@@ -75,7 +75,7 @@ resource "kubernetes_deployment" "http_server" {
         service_account_name = kubernetes_service_account.general.metadata.0.name
         container {
           name  = "http-server"
-          image = "${var.image_name}:${var.image_tag}"
+          image = "${var.image_repository}:${var.image_tag}"
           env_from {
             config_map_ref {
               name = kubernetes_config_map.config_envs.metadata.0.name
